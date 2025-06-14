@@ -99,7 +99,7 @@ def IQR_outlier(df: pd.DataFrame, cols: list[str] = None):
     """
     if not cols:
         cols = df.columns.tolist()
-
+    df_no_outliers = None
     for col in cols:
         if not pd.api.types.is_numeric_dtype(df[col]):
             print(f"Warning: Column '{col}' is not numeric. Skipping outlier detection.")
@@ -112,11 +112,12 @@ def IQR_outlier(df: pd.DataFrame, cols: list[str] = None):
         upper_bound = Q3 + 1.5 * IQR
 
         outliers = df[(df[col] < lower_bound) | (df[col] > upper_bound)]
+        df_no_outliers = df[(df[col] >= lower_bound) & (df[col] <= upper_bound)]
         if not outliers.empty:
             print(f"Found {len(outliers)} outliers in column '{col}' using IQR method.")
         else:
             print(f"No outliers found in column '{col}' using IQR method.")
-    return df
+    return df_no_outliers
      
 
 def find_columns_with_missing_value(df:pd.DataFrame, threshold=0.05)->list:
