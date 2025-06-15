@@ -1,4 +1,4 @@
-```
+
 # Introduction to the project
 
 
@@ -13,7 +13,6 @@ This project provides tools and workflows for analyzing insurance risk data, inc
 
 ## Project Structure
 
-```
 Insurance-Risk-Analytics-Predictive-Modeling/
 │
 ├── data/                # Raw and processed data (DVC tracked)
