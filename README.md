@@ -1,11 +1,11 @@
-```
+
 # Introduction to the project
 
-/**
- * This project involves analyzing historical car insurance claim data for AlphaCare Insurance Solutions (ACIS) in South Africa.
- * The primary objectives are to optimize marketing strategies and identify low-risk customer segments eligible for reduced premiums,
- * thereby attracting new clients and enhancing the company's competitive edge in the market.
- */
+
+This project involves analyzing historical car insurance claim data for AlphaCare Insurance Solutions (ACIS) in South Africa.
+The primary objectives are to optimize marketing strategies and identify low-risk customer segments eligible for reduced premiums,
+thereby attracting new clients and enhancing the company's competitive edge in the market.
+
 
 # Insurance Risk Analytics - Predictive Modeling
 
@@ -13,7 +13,6 @@ This project provides tools and workflows for analyzing insurance risk data, inc
 
 ## Project Structure
 
-```
 Insurance-Risk-Analytics-Predictive-Modeling/
 │
 ├── data/                # Raw and processed data (DVC tracked)
