@@ -65,6 +65,23 @@ def find_and_replace_outliers_with_median(df, cols, threshold=3):
 
 
 def find_outliers(df:pd.DataFrame, threshold=3):
+    """
+    Identifies columns in a DataFrame that contain outliers based on the z-score method.
+
+    Parameters:
+        df (pd.DataFrame): The input DataFrame to check for outliers.
+        threshold (float, optional): The z-score threshold to use for identifying outliers. 
+            Values with absolute z-score greater than this threshold are considered outliers. Default is 3.
+
+    Returns:
+        list: A list of column names that contain outliers.
+
+    Notes:
+        - Only numeric columns are considered for outlier detection.
+        - Columns with zero standard deviation are skipped.
+        - Prints warnings for non-numeric columns and columns with zero standard deviation.
+        - Prints the number of outliers found per column or a message if none are found.
+    """
     cols = []
     for col in df.columns:
         if not pd.api.types.is_numeric_dtype(df[col]):
@@ -236,6 +253,15 @@ def drop_column(df:pd.DataFrame, cols:list):
     return df
 
 def convert_money_tofloat(value:object):
-    if(str(value) == 'nan'):
+    """
+    Converts a monetary value to a float-compatible string by removing commas and handling NaN values.
+
+    Args:
+        value (object): The monetary value to convert. Can be a string, float, or other object.
+
+    Returns:
+        str: The value as a string with commas removed. If the input is NaN, returns '0.0'.
+    """
+    if(str(value) == 'nan' or str(value) == 'None'):
         value = '0.0'
     return ''.join(str(value).split(','))
