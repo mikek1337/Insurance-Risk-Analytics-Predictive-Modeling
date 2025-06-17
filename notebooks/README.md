@@ -1,56 +1,108 @@
-Collecting workspace information# Insurance Risk Analytics - Initial Data Analysis
+# Insurance Risk Analytics - Python Modules
 
-This Jupyter notebook provides an initial exploratory data analysis and preprocessing workflow for the insurance risk analytics dataset. The goal is to clean, transform, and visualize the data to support predictive modeling and business insights.
+This project contains three main Python modules for data preprocessing, statistical testing, and visualization, as well as a modeling notebook:
 
-## Contents
-
-- **Data Loading:**  
-  Reads the raw insurance data from a pipe-delimited text file into a pandas DataFrame.
-
-- **Data Cleaning:**  
-  - Drops columns with more than 70% missing data.
-  - Normalizes date columns (`TransactionMonth`, `VehicleIntroDate`).
-  - Converts monetary columns (e.g., `CapitalOutstanding`) to numeric types.
-  - Fills missing values in categorical columns with `'Not specified'`.
-  - Calculates derived features such as `VehicleAge`.
-
-- **Missing Value Analysis:**  
-  Identifies columns with missing values to guide further cleaning.
-
-- **Outlier Detection and Handling:**  
-  - Detects outliers in numerical columns using z-score.
-  - Replaces outliers with the median value for robust analysis.
-
-- **Visualization:**  
-  - Box plots for numerical variables.
-  - Histograms for categorical variables.
-  - Scatter plots and correlation matrices for key metrics.
-  - Bar plots, heatmaps, lollipop charts, and bubble plots to explore relationships between provinces, cover types, premiums, and vehicle makes.
-
-## Usage
-
-1. **Install dependencies:**  
-   Make sure you have the required Python packages (see requirements.txt).
-
-2. **Run the notebook:**  
-   Open inital_analysis.ipynb in Jupyter or VS Code and execute the cells sequentially.
-
-3. **Customize analysis:**  
-   Modify the columns or visualizations as needed for your specific business questions.
-
-## Key Functions Used
-
-- `load_data`, `drop_column`, `find_columns_with_missing_value`, `find_outliers`, `find_and_replace_outliers_with_median`, `IQR_outlier`, `normalize_date`, `convert_money_tofloat` from `scripts/preprocess.py`
-- `plot_boxplot`, `plot_histogram`, `correlation_matrix` from `scripts/plots.py`
-
-## Output
-
-The notebook produces:
-- Cleaned and preprocessed DataFrame ready for modeling.
-- Visual summaries of key variables and relationships.
-- Insights into data quality, missing values, and outlier distributions.
+- [`scripts/preprocess.py`](scripts/preprocess.py): Data cleaning, transformation, and utility functions.
+- [`scripts/stat_test.py`](scripts/stat_test.py): Statistical tests for comparing groups.
+- [`scripts/plots.py`](scripts/plots.py): Visualization utilities for exploratory data analysis.
+- [`notebooks/modeling.ipynb`](../notebooks/modeling.ipynb): End-to-end notebook for risk modeling and evaluation.
 
 ---
 
-**Note:**  
-Update the data file path and column names as needed to match your dataset. For further analysis or modeling, use the cleaned DataFrame produced in this notebook.
+## `preprocess.py`
+
+This module provides functions for cleaning, transforming, and preparing insurance data for analysis and modeling.
+
+### Key Functions
+
+- **load_data(path)**  
+  Loads a CSV file from the given path, parsing the 'Timestamp' column as dates.
+
+- **drop_column(df, cols)**  
+  Drops specified columns from a DataFrame.
+
+- **find_columns_with_missing_value(df, threshold=0.05)**  
+  Returns a list of columns with a proportion of missing values above the given threshold (default 5%).
+
+- **find_outliers(df, threshold=3)**  
+  Identifies columns containing outliers based on the z-score method (default threshold 3).
+
+- **find_and_replace_outliers_with_median(df, cols, threshold=3)**  
+  Detects outliers in specified numeric columns using the z-score method and replaces them with the column median.
+
+- **IQR_outlier(df, cols=None)**  
+  Identifies outliers in specified columns using the IQR method. If `cols` is None, checks all columns.
+
+- **normalize_date(df, date_col)**  
+  Normalizes a date column to remove time information.
+
+- **convert_money_tofloat(value)**  
+  Converts a monetary value to a float-compatible string, handling commas and NaNs.
+
+---
+
+## `stat_test.py`
+
+This module provides statistical tests for comparing groups.
+
+### Key Functions
+
+- **t_test_for_equivalence(group1_df, group2_df, column_name, alpha, test_name="")**  
+  Performs an independent samples t-test for equivalence between two groups for a numerical column.  
+  Returns a tuple: (is_significant, p_value).
+
+- **chi_squared_test_for_equivalence(group1_df, group2_df, column_name, alpha, test_name="")**  
+  Performs a Chi-Squared test for independence between two groups for a categorical column.  
+  Returns a tuple: (is_significant, p_value).
+
+---
+
+## `plots.py`
+
+This module provides plotting utilities for exploratory data analysis.
+
+### Key Functions
+
+- **plot_boxplot(df, cols)**  
+  Plots boxplots for the specified numeric columns. If `cols` is empty, plots all columns.
+
+- **plot_histogram(df, cols)**  
+  Plots histograms for numeric columns and count plots for categorical columns. If `cols` is empty, plots all columns.
+
+- **correlation_matrix(df, cols, name)**  
+  Displays a heatmap of the correlation matrix for the specified columns.
+
+---
+
+## `modeling.ipynb`
+
+This Jupyter notebook demonstrates the full workflow for insurance risk modeling, including:
+
+- Data loading and preprocessing
+- Feature engineering (e.g., margin calculation, claim flag creation)
+- Statistical A/B testing using `stat_test.py` functions
+- Group comparisons across categorical and numerical features
+- Risk metric analysis by province and postal code (claim frequency, severity, margin)
+- Model training and evaluation for:
+    - **Claim Severity** (regression): Linear Regression, Random Forest, XGBoost
+    - **Claim Probability** (classification): Logistic Regression, Random Forest, XGBoost
+- Model performance metrics (RMSE, R², accuracy, precision, recall, F1, ROC AUC)
+- Feature importance and SHAP value analysis for interpretability
+
+Use this notebook as a template for your own insurance risk analytics projects.
+
+---
+
+## Usage
+
+Import the functions you need in your analysis scripts or notebooks:
+
+```python
+from preprocess import (
+    load_data, drop_column, find_columns_with_missing_value, find_outliers,
+    find_and_replace_outliers_with_median, IQR_outlier, normalize_date, convert_money_tofloat
+)
+from stat_test import (
+    t_test_for_equivalence, chi_squared_test_for_equivalence
+)
+from plots import plot_boxplot,
