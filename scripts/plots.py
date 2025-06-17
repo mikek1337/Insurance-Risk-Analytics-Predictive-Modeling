@@ -7,6 +7,7 @@ def plot_boxplot(df:pd.DataFrame, cols:list[str]):
     for col in cols:
         if pd.api.types.is_numeric_dtype(df[col]):
             plt.boxplot(df[col])
+            plt.xlabel(col, fontsize=8)
             plt.figure(figsize=(10,7))
             plt.show()
 

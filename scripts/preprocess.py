@@ -1,13 +1,67 @@
 import pandas as pd
 import numpy as np
+import csv
 DATA_FOLDER = '../data'
 
-def load_data(filename):
+def load(filename):
     try:
         return pd.read_csv(f'../data/{filename}', delimiter='|')
     except:
         print(f'{DATA_FOLDER}/{filename}')
         print()
+
+
+
+
+def save_csv(data:pd.DataFrame, output_filepath:str, delimiter:str):
+    """
+    Reads a CSV file delimited by '|' (pipe) and writes its content
+    to a new CSV file delimited by ',' (comma).
+
+    Args:
+        input_filepath (str): The path to the input pipe-delimited CSV file.
+        output_filepath (str): The path where the new comma-delimited CSV
+                                file will be saved.
+    """
+
+    with open(output_filepath, 'w', newline='', encoding='utf-8') as outfile:
+                # Create a CSV writer object (default delimiter is comma)
+            comma_writer = csv.writer(outfile, delimiter='|')
+
+                # Iterate over each row from the input file
+            for row in data:
+                    # Write the row to the output file
+                comma_writer.writerow(row)
+    
+    print(f"Successfully converted to '{output_filepath}'")
+
+def convert_pipe_to_comma_csv(input_filepath, output_filepath):
+    """
+    Reads a CSV file delimited by '|' (pipe) and writes its content
+    to a new CSV file delimited by ',' (comma).
+
+    Args:
+        input_filepath (str): The path to the input pipe-delimited CSV file.
+        output_filepath (str): The path where the new comma-delimited CSV
+                                file will be saved.
+    """
+    
+        # Open the input file for reading with the pipe delimiter
+    with open(input_filepath, 'r', newline='', encoding='utf-8') as infile:
+            # Create a CSV reader object, specifying the pipe delimiter
+        pipe_reader = csv.reader(infile, delimiter='|')
+
+            # Open the output file for writing with the default comma delimiter
+        with open(output_filepath, 'w', newline='', encoding='utf-8') as outfile:
+                # Create a CSV writer object (default delimiter is comma)
+            comma_writer = csv.writer(outfile, delimiter='|')
+
+                # Iterate over each row from the input file
+            for row in pipe_reader:
+                    # Write the row to the output file
+                comma_writer.writerow(row)
+    
+    print(f"Successfully converted '{input_filepath}' to '{output_filepath}'")
 
 
 def find_and_replace_outliers_with_median(df, cols, threshold=3):
@@ -159,62 +213,7 @@ def normalize_date(df:pd.DataFrame, date_col:str):
     df[date_col] = pd.to_datetime(df[date_col]).dt.normalize()
     return df
 
-def clean_data(df:pd.DataFrame)-> pd.DataFrame:
-    """
-    Cleans and preprocesses the input DataFrame by performing several operations:
-    1. Converts the 'Timestamp' column to datetime.
-    2. Drops the 'Comments' column and forward-fills missing values.
-    3. Clips the specified columns to have a minimum value of 0.
-    4. Clips the 'RH' column to be within the range [0, 100].
-    5. Replaces outliers in the specified columns and 'Tamb' with the median value.
-    6. Resets the DataFrame index.
-    Args:
-        df (pd.DataFrame): The input DataFrame containing the data to be cleaned.
-        cols (list): List of column names to clip and check for outliers.
-    Returns:
-        pd.DataFrame: The cleaned and preprocessed DataFrame with reset index.
-    """
-    
-    df_normalized = normalize_date(df, 'at')
-   
-    missing_cols = find_columns_with_missing_value(df_normalized, 0.75)
-    
-    cleaned_data = df_normalized
-    if len(missing_cols) > 0:
-        cleaned_data = drop_column(df_normalized, missing_cols)
-    
-    
-    return cleaned_data
 
-def load_countries(paths:list):
-    """
-    Loads and concatenates country data from a list of file paths.
-
-    Args:
-        paths (list): A list of file paths, each containing country data.
-
-    Returns:
-        pandas.DataFrame: A DataFrame containing the concatenated data from all provided file paths.
-    """
-    full_df = pd.concat([load_country_data(path) for path in paths], ignore_index=True)
-    return full_df
-   
-def load_country_data(path:str):
-    """
-    Loads data from the specified file path, extracts the country name from the file path,
-    and adds it as a new column 'Country' to the DataFrame.
-
-    Args:
-        path (str): The file path to the data file. The country name is expected to be the first part
-            of the filename, separated by an underscore, and located in the third segment of the path.
-
-    Returns:
-        pandas.DataFrame: The loaded DataFrame with an additional 'Country' column.
-    """
-    df = load_data(path)
-    country = path.split('/')[2].split('_')[0]
-    df['Country'] = country
-    return df 
     
 def load_data(path:str):
     """
